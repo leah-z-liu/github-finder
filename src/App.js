@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users';
+import Search from './components/users/Search';
 import axios from 'axios'
 import './App.css';
 
@@ -15,8 +16,13 @@ class App extends Component {
 
   async componentDidMount() {
     this.setState({ loading: true });
-    const response = await axios.get('https://api.github.com/users');
+    const response = await axios.get(`https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
     this.setState({ users: response.data, loading: false });
+  }
+
+  searchUsers = async (text) => {
+    
+    const response = await axios.get(`https://api.github.com/search/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
   }
 
   render() {
@@ -25,6 +31,7 @@ class App extends Component {
       <div className='App'>
         <Navbar />
         <div className='container'>
+          <Search searchUsers={this.searchUsers} />
           <Users loading={this.state.loading} users={this.state.users} />
         </div>
       </div>
